@@ -1,0 +1,30 @@
+version: "3"
+services:
+  basededatos:
+    image: mysql:5.7
+    container_name: basededatos
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+    volumes:
+      - ./database:/var/lib/mysql
+    ports:
+      - 3307:3306
+  serverphp:
+    image: php:7.0-apache
+    container_name: serverphp
+    volumes:
+      - ./servicioweb:/var/www/html
+    ports:
+      - 8080:80
+    links:
+      - basededatos
+  phpmyadmin:
+    depends_on:
+      - basededatos
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: basededatos
+    ports:
+      - 8001:80
